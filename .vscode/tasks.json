@@ -1,0 +1,32 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "cargo",
+      "command": "clean",
+      "problemMatcher": ["$rustc"],
+      "group": "build",
+      "label": "rust: cargo clean"
+    },
+    {
+      "label": "Cargo watch",
+      "type": "shell",
+      "command": "cargo",
+      "args": [
+        "watch",
+        "-x",
+        "run -- --port 8000 --first-secret primary123 --kill-hook ./scripts/kill.sh --restore-hook ./scripts/restore.sh --restore-delay 15",
+        "-w",
+        "./src"
+      ],
+      "problemMatcher": ["$rustc"],
+      "group": "build"
+    },
+    {
+      "type": "cargo",
+      "command": "build",
+      "args": ["--release"],
+      "label": "rust: cargo build --release"
+    }
+  ]
+}

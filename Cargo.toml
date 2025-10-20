@@ -1,0 +1,11 @@
+[package]
+name = "killswitch"
+version = "0.0.1"
+edition = "2024"
+authors = ["dhenry for mytinydc.com"]
+license = "MIT <https://mit-license.org/>"
+
+[dependencies]
+rand = "0.9.2"
+chrono = "0.4.42" 
+clap = { version = "4.5.50", features = ["derive"] }
