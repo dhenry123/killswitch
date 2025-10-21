@@ -6,8 +6,8 @@ use std::io::prelude::*;
 use std::net::TcpListener;
 use std::process::Command;
 use std::sync::{Arc, Mutex};
-use std::thread;
 use std::time::Duration;
+use std::{fs, thread};
 
 use chrono::Utc;
 use rand::Rng;
@@ -19,9 +19,9 @@ struct Args {
     #[arg(short, long, default_value_t = 8000)]
     port: u16,
 
-    /// First secret
-    #[arg(short, long)]
-    first_secret: String,
+    /// First secret file
+    #[arg(short = 's', long)]
+    first_secret_file: String,
 
     /// File path for first shell hook (kill operation)
     #[arg(short = 'k', long)]
@@ -49,9 +49,35 @@ impl KillswitchServer {
     fn new(args: Args) -> Result<Self, std::io::Error> {
         let listener = TcpListener::bind(format!("0.0.0.0:{}", args.port))?;
 
+        // Read first secret from file
+        let first_secret = fs::read_to_string(&args.first_secret_file)
+            .map_err(|e| {
+                std::io::Error::new(
+                    std::io::ErrorKind::NotFound,
+                    format!(
+                        "Failed to read first secret file '{}': {}",
+                        args.first_secret_file, e
+                    ),
+                )
+            })?
+            .trim()
+            .to_string();
+
+        if first_secret.is_empty() {
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::InvalidData,
+                "First secret file is empty",
+            ));
+        }
+
+        log(&format!(
+            "First secret loaded successfully from {}",
+            args.first_secret_file
+        ));
+
         Ok(Self {
             listener,
-            first_secret: args.first_secret,
+            first_secret,
             kill_hook: args.kill_hook,
             restore_hook: args.restore_hook,
             restore_delay: args.restore_delay,

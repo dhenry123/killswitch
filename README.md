@@ -50,7 +50,7 @@ Client Request (2nd secret)
 ```bash
 ./killswitch \
     --port 8000 \               # Listening port (default: 8000)
-    --first-secret "primary" \  # Primary secret key
+    --first-secret-file "/etc/killswitchpasswd" \  # Primary secret file
     --restore-delay 60 \  # Delay between kill and restore in secondes
     --kill-hook "/path/to/kill.sh" \    # Script to execute immediately
     --restore-hook "/path/to/restore.sh" # Script to execute after 5 minutes
@@ -61,7 +61,7 @@ Client Request (2nd secret)
 ```bash
 ./killswitch \
     --port 8080 \
-    --first-secret "myPrimaryKey123" \
+    --first-secret-file "/etc/killswitchpasswd" \
     --restore-delay 60 \
     --kill-hook "/opt/scripts/emergency_shutdown.sh" \
     --restore-hook "/opt/scripts/restore_services.sh"
@@ -167,6 +167,7 @@ The server provides detailed logging with timestamps for:
 ## Installation
 
 - Create hook scripts:
+  - /etc/killswitchpasswd (chmod 700)
   - /usr/local/share/killswitch/hooks/kill_example.sh
   - /usr/local/share/killswitch/hooks/restore_example.sh
 
@@ -192,7 +193,7 @@ Group=$USER_NAME
 WorkingDirectory=$CONFIG_DIR
 ExecStart=/usr/local/bin/${SERVICE_NAME} \\
     --port 8080 \\
-    --first-secret "change-this-in-production" \\
+    --first-secret-file "/etc/killswitchpasswd" \\
     --kill-hook "/usr/local/share/killswitch/hooks/kill_example.sh" \\
     --restore-hook "/usr/local/share/killswitch/hooks/restore_example.sh" \\
     --restore-delay 300

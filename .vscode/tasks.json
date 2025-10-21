@@ -15,7 +15,7 @@
       "args": [
         "watch",
         "-x",
-        "run -- --port 8000 --first-secret primary123 --kill-hook ./scripts/kill.sh --restore-hook ./scripts/restore.sh --restore-delay 15",
+        "run -- --port 8000 --first-secret-file ./scripts/secret --kill-hook ./scripts/kill.sh --restore-hook ./scripts/restore.sh --restore-delay 15",
         "-w",
         "./src"
       ],
